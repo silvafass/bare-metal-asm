@@ -57,7 +57,7 @@
         l32r    a10, STARTING_BLICK_MESSAGE_ADDR
         call8   print_message
 
-    turn_backscreen_on:
+    toggle_displa_backlight:
         l32r    a2, GPIO_REG_BASE
         l32r    a3, LED_GPIO
         s32i    a3, a2, GPIO_OUT_W1TS_REG_OFFSET
@@ -67,7 +67,6 @@
         l32r    a10, DELAY_COUNT
         call8   wait_cpu_cycles
 
-    turn_backscreen_off:
         l32r    a2, GPIO_REG_BASE
         l32r    a3, LED_GPIO
         s32i    a3, a2, GPIO_OUT_W1TC_REG_OFFSET
@@ -77,7 +76,7 @@
         l32r    a10, DELAY_COUNT
         call8   wait_cpu_cycles
 
-        j       turn_backscreen_on
+        j       toggle_displa_backlight
 
         retw
 
