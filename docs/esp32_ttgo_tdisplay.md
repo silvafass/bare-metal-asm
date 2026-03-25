@@ -55,7 +55,7 @@ cd bare-metal-asm
 
 Use the make command to easily build and flash into the board:
 ```bash
-make flash_esp32_ttgo_tdisplay_blinks
+make flash_esp32_ttgo_tdisplay BIN=blinks
 ```
 Or execute specific commands to assemble and link the binary:
 ```bash
