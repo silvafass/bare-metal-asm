@@ -1,3 +1,9 @@
+.set    RTC_CNTL_WDTWPROTECT_REG_OFFSET, 0x00a4
+.set    RTC_CNTL_WDTCONFIG0_REG_OFFSET, 0x008C
+.set    GPIO_ENABLE_W1TS_REG_OFFSET, 0x0024
+.set    GPIO_OUT_W1TS_REG_OFFSET, 0x0008
+.set    GPIO_OUT_W1TC_REG_OFFSET, 0x000c
+
 .section .rodata_desc
 
     BOOT_MAGIC_WORD: .word 0xABCD5432
@@ -16,14 +22,9 @@
     .literal    BACKLIGHT_ON_MESSAGE_ADDR, backlight_on_message
     .literal    BACKLIGHT_OFF_MESSAGE_ADDR, backlight_off_message
 
-    RTC_CNTL_WDTWPROTECT_REG:   .word 0x3FF480A4
-    RTC_CNTL_WDTCONFIG0_REG:    .word 0x3FF4808C
-
-    UART_FIFO_REG:              .word 0x3FF40000
-
-    GPIO_ENABLE_W1TS_REG:       .word 0x3FF44024
-    GPIO_OUT_W1TS_REG:          .word 0x3FF44008
-    GPIO_OUT_W1TC_REG:          .word 0x3FF4400C
+    RTC_CNTL_OPTIONS0_REG_BASE: .word 0x3FF48000
+    UART_FIFO_REG_BASE:         .word 0x3FF40000
+    GPIO_REG_BASE:              .word 0x3FF44000
 
     WDT_WPROTECT_VAL:           .word 0x50D83AA1
     DELAY_COUNT:                .word 20000000
@@ -49,17 +50,17 @@
         l32r    a10, BOOT_MESSAGE_ADDR
         call8   print_message
 
-        l32r    a2, GPIO_ENABLE_W1TS_REG
+        l32r    a2, GPIO_REG_BASE
         l32r    a3, LED_GPIO
-        s32i    a3, a2, 0
+        s32i    a3, a2, GPIO_ENABLE_W1TS_REG_OFFSET
 
         l32r    a10, STARTING_BLICK_MESSAGE_ADDR
         call8   print_message
 
     turn_backscreen_on:
-        l32r    a2, GPIO_OUT_W1TS_REG
+        l32r    a2, GPIO_REG_BASE
         l32r    a3, LED_GPIO
-        s32i    a3, a2, 0
+        s32i    a3, a2, GPIO_OUT_W1TS_REG_OFFSET
         l32r    a10, BACKLIGHT_ON_MESSAGE_ADDR
         call8   print_message
 
@@ -67,9 +68,9 @@
         call8   wait_cpu_cycles
 
     turn_backscreen_off:
-        l32r    a2, GPIO_OUT_W1TC_REG
+        l32r    a2, GPIO_REG_BASE
         l32r    a3, LED_GPIO
-        s32i    a3, a2, 0
+        s32i    a3, a2, GPIO_OUT_W1TC_REG_OFFSET
         l32r    a10, BACKLIGHT_OFF_MESSAGE_ADDR
         call8   print_message
 
@@ -96,13 +97,12 @@
     disable_rtc_watchdog:
         entry   a1, 32
 
-        l32r    a2, RTC_CNTL_WDTWPROTECT_REG
+        l32r    a2, RTC_CNTL_OPTIONS0_REG_BASE
         l32r    a3, WDT_WPROTECT_VAL
-        s32i    a3, a2, 0
+        movi    a4, 0
 
-        l32r    a2, RTC_CNTL_WDTCONFIG0_REG
-        l32r    a3, WDT_WPROTECT_VAL
-        s32i    a3, a2, 0
+        s32i    a3, a2, RTC_CNTL_WDTWPROTECT_REG_OFFSET
+        s32i    a4, a2, RTC_CNTL_WDTCONFIG0_REG_OFFSET
 
         retw
 
@@ -111,7 +111,7 @@
     print_message:
         entry   a1, 32
 
-        l32r    a3, UART_FIFO_REG
+        l32r    a3, UART_FIFO_REG_BASE
         movi    a4, 126
     print_loop:
         l8ui    a5, a2, 0
