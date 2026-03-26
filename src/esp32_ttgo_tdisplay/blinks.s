@@ -1,5 +1,12 @@
-.set    RTC_CNTL_WDTWPROTECT_REG_OFFSET, 0x00a4 //
+/*
+ * File: blinks.s
+ * Description: Implementation for blinking the backlight of the display and sending messages via a UART peripheral.
+ */
+
+.set    DISABLE_WATCHDOG, 1
+.set    RTC_CNTL_WDTWPROTECT_REG_OFFSET, 0x00a4
 .set    RTC_CNTL_WDTCONFIG0_REG_OFFSET, 0x008C
+.set    RTC_CNTL_WDTFEED_REG_OFFSET, 0x00A0
 .set    GPIO_ENABLE_W1TS_REG_OFFSET, 0x0024
 .set    GPIO_OUT_W1TS_REG_OFFSET, 0x0008
 .set    GPIO_OUT_W1TC_REG_OFFSET, 0x000c
@@ -22,20 +29,23 @@
     .literal    BACKLIGHT_ON_MESSAGE_ADDR, backlight_on_message
     .literal    BACKLIGHT_OFF_MESSAGE_ADDR, backlight_off_message
 
-    RTC_CNTL_OPTIONS0_REG_BASE: .word 0x3FF48000
-    UART_FIFO_REG_BASE:         .word 0x3FF40000
-    GPIO_REG_BASE:              .word 0x3FF44000
+    RTC_CNTL_OPTIONS0_REG_BASE:     .word 0x3FF48000
+    UART_FIFO_REG_BASE:             .word 0x3FF40000
+    GPIO_REG_BASE:                  .word 0x3FF44000
 
-    WDT_WPROTECT_VAL:           .word 0x50D83AA1
-    DELAY_COUNT:                .word 20000000
-    LED_GPIO:                   .word (1 << 4)
+    WDT_WPROTECT_VAL:               .word 0x50D83AA1
+    DELAY_COUNT:                    .word 1000
+    LED_GPIO:                       .word (1 << 4)
 
+    .align 4
     .global reset_handler
     .type reset_handler, @function
     reset_handler:
         entry   a1, 32
 
+    .if DISABLE_WATCHDOG
         call8   disable_rtc_watchdog
+    .endif
 
         call8   main
 
@@ -76,6 +86,10 @@
         l32r    a10, DELAY_COUNT
         call8   wait_cpu_cycles
 
+        .if !DISABLE_WATCHDOG
+        call8   feed_rtc_watchdog
+        .endif
+
         j       toggle_displa_backlight
 
         retw
@@ -85,10 +99,13 @@
     wait_cpu_cycles:
         entry   a1, 32
 
-    delay_inner:
-        addi    a2, a2, -1
-        bnez    a2, delay_inner
+        movi    a3, (80 * 1000)             // Normal speed: 80 MHz
+        mull    a2, a2, a3
 
+        loop    a2, wait_cpu_cycles_return
+        nop
+
+    wait_cpu_cycles_return:
         retw
 
     .align 4
@@ -102,6 +119,21 @@
 
         s32i    a3, a2, RTC_CNTL_WDTWPROTECT_REG_OFFSET
         s32i    a4, a2, RTC_CNTL_WDTCONFIG0_REG_OFFSET
+        s32i    a4, a2, RTC_CNTL_WDTWPROTECT_REG_OFFSET
+
+        retw
+
+    .align 4
+    .type feed_rtc_watchdog, @function
+    feed_rtc_watchdog:
+        entry   a1, 32
+
+        l32r    a2, RTC_CNTL_OPTIONS0_REG_BASE
+        l32r    a3, WDT_WPROTECT_VAL
+        movi    a4, (1 << 31)
+
+        s32i    a3, a2, RTC_CNTL_WDTWPROTECT_REG_OFFSET
+        s32i    a4, a2, RTC_CNTL_WDTFEED_REG_OFFSET
         s32i    a4, a2, RTC_CNTL_WDTWPROTECT_REG_OFFSET
 
         retw

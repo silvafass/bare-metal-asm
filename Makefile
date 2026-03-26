@@ -27,7 +27,7 @@ flash_esp32_ttgo_tdisplay: clean _build_dir
 		@exit 1;
 	@fi
 
-	xtensa-esp32-elf-as src/esp32_ttgo_tdisplay/$(BIN).S -o build/esp32_ttgo_tdisplay_$(BIN).o
+	xtensa-esp32-elf-as src/esp32_ttgo_tdisplay/$(BIN).s -o build/esp32_ttgo_tdisplay_$(BIN).o
 	xtensa-esp32-elf-ld -T src/esp32_ttgo_tdisplay/linker.ld -o build/esp32_ttgo_tdisplay_$(BIN) build/esp32_ttgo_tdisplay_$(BIN).o
 	espflash flash --monitor --chip esp32 --port /dev/ttyUSB0 build/esp32_ttgo_tdisplay_$(BIN)
 

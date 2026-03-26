@@ -59,7 +59,7 @@ make flash_esp32_ttgo_tdisplay BIN=blinks
 ```
 Or execute specific commands to assemble and link the binary:
 ```bash
-xtensa-esp32-elf-as src/esp32_ttgo_tdisplay/blinks.S -o build/esp32_ttgo_tdisplay_blinks.o
+xtensa-esp32-elf-as src/esp32_ttgo_tdisplay/blinks.s -o build/esp32_ttgo_tdisplay_blinks.o
 xtensa-esp32-elf-ld -T src/esp32_ttgo_tdisplay/linker.ld -o build/esp32_ttgo_tdisplay_blinks build/esp32_ttgo_tdisplay_blinks.o
 ```
 And/or Flash the firmware by connecting the ESP32 TTGO T-Display board to the computer via USB and running the command below to update the board's firmware:
