@@ -86,9 +86,9 @@
         l32r    a10, DELAY_COUNT
         call8   wait_cpu_cycles
 
-        .if !DISABLE_WATCHDOG
+    .if !DISABLE_WATCHDOG
         call8   feed_rtc_watchdog
-        .endif
+    .endif
 
         j       toggle_displa_backlight
 
