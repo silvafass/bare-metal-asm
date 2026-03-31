@@ -72,3 +72,4 @@ espflash flash --monitor --chip esp32 --port /dev/ttyUSB0 build/esp32_ttgo_tdisp
 * Official page for the [ESP32 microchip](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html)
   * [ESP32 Datasheet](https://documentation.espressif.com/esp32_datasheet_en.pdf).
   * [ESP32 Techinical reference manual](https://documentation.espressif.com/esp32_technical_reference_manual_en.pdf)
+* [Xtensa LX Instruction set](https://www.cadence.com/content/dam/cadence-www/global/en_US/documents/tools/silicon-solutions/compute-ip/isa-summary.pdf)
