@@ -1,15 +1,15 @@
-// ============================================================================
-// File: blinks.s
-// Description: Implementation for blinking the backlight of the display and
-//              sending messages via a UART peripheral.
-// Architecture: Xtensa LX6 (ESP32)
-// ============================================================================
+# ============================================================================
+# File: blinks.s
+# Description: Implementation for blinking the backlight of the display and
+#              sending messages via a UART peripheral.
+# Architecture: Xtensa LX6 (ESP32)
+# ============================================================================
 
-// ============================================================================
-// Section: Constants and Register Offsets
-// Description: Defines compilation flags and hardware register offsets used
-//              along the program.
-// ============================================================================
+# ============================================================================
+# Section: Constants and Register Offsets
+# Description: Defines compilation flags and hardware register offsets used
+#              along the program.
+# ============================================================================
 .set    DISABLE_WATCHDOG, 1
 .set    RTC_CNTL_WDTWPROTECT_REG_OFFSET, 0x00a4
 .set    RTC_CNTL_WDTCONFIG0_REG_OFFSET, 0x008C
@@ -18,19 +18,19 @@
 .set    GPIO_OUT_W1TS_REG_OFFSET, 0x0008
 .set    GPIO_OUT_W1TC_REG_OFFSET, 0x000c
 
-// ============================================================================
-// Section: Read-Only Data (ESP32 Application Descriptor)
-// Description: Constains the boot magic word expected by the ESP32 bootloader.
-// ============================================================================
+# ============================================================================
+# Section: Read-Only Data (ESP32 Application Descriptor)
+# Description: Constains the boot magic word expected by the ESP32 bootloader.
+# ============================================================================
 .section .rodata_desc
 
     BOOT_MAGIC_WORD: .word 0xABCD5432
 
-// ============================================================================
-// Section: Read-Only Data
-// Description: Mapped to DROM (Flash Data memory). Contains constant strings,
-//              hardcoded arrays, and other immutable variables.
-// ============================================================================
+# ============================================================================
+# Section: Read-Only Data
+# Description: Mapped to DROM (Flash Data memory). Contains constant strings,
+#              hardcoded arrays, and other immutable variables.
+# ============================================================================
 .section .rodata
 
     boot_message:           .string "\r\n=== Bare Metal ESP32 Booted! ===\r\n"
@@ -38,11 +38,11 @@
     backlight_on_message:   .string "Display backlight: ON\r\n"
     backlight_off_message:  .string "Display backlight: OFF\r\n"
 
-// ============================================================================
-// Section: Text / Executable Code
-// Description: Contains literal pools (memory addresses/constants) and all
-//              executable instructions.
-// ============================================================================
+# ============================================================================
+# Section: Text / Executable Code
+# Description: Contains literal pools (memory addresses/constants) and all
+#              executable instructions.
+# ============================================================================
 .section .text
 
     .literal    BOOT_MESSAGE_ADDR, boot_message
@@ -58,10 +58,10 @@
     DELAY_COUNT:                    .word 1000
     LED_GPIO:                       .word (1 << 4)
 
-    // ------------------------------------------------------------------------
-    // Function: reset_handler
-    // Description: The main entry point called by the ESP32 bootloader.
-    // ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # Function: reset_handler
+    # Description: The main entry point called by the ESP32 bootloader.
+    # ------------------------------------------------------------------------
     .align 4
     .global reset_handler
     .type reset_handler, @function
@@ -76,10 +76,10 @@
 
         waiti   0
 
-    // ------------------------------------------------------------------------
-    // Function: main
-    // Description: The primary application loop.
-    // ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # Function: main
+    # Description: The primary application loop.
+    # ------------------------------------------------------------------------
     .align 4
     .global main
     .type main, @function
@@ -123,11 +123,11 @@
 
         retw
 
-    // ------------------------------------------------------------------------
-    // Function: wait_cpu_cycles
-    // Description: Blocks execution for a specifified duration based on CPU
-    //              cycles. Assumes an 80 MHz CPU clock speed.
-    // ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # Function: wait_cpu_cycles
+    # Description: Blocks execution for a specifified duration based on CPU
+    #              cycles. Assumes an 80 MHz CPU clock speed.
+    # ------------------------------------------------------------------------
     .align 4
     .type wait_cpu_cycles, @function
     wait_cpu_cycles:
@@ -142,10 +142,10 @@
     wait_cpu_cycles_return:
         retw
 
-    // ------------------------------------------------------------------------
-    // Function: disable_rtc_watchdog
-    // Description: Disables the RTC (Real Time Clock) whatchdog Timer.
-    // ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # Function: disable_rtc_watchdog
+    # Description: Disables the RTC (Real Time Clock) whatchdog Timer.
+    # ------------------------------------------------------------------------
     .align 4
     .type disable_rtc_watchdog, @function
     disable_rtc_watchdog:
@@ -161,10 +161,10 @@
 
         retw
 
-    // ------------------------------------------------------------------------
-    // Function: feed_rtc_watchdog
-    // Description: Resets the RTC Watchdog timer to present a system reset.
-    // ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # Function: feed_rtc_watchdog
+    # Description: Resets the RTC Watchdog timer to present a system reset.
+    # ------------------------------------------------------------------------
     .align 4
     .type feed_rtc_watchdog, @function
     feed_rtc_watchdog:
@@ -180,10 +180,10 @@
 
         retw
 
-    // ------------------------------------------------------------------------
-    // FunctionL print_message
-    // Description: Writes a null-terminated string to the UART0 TX FIVO.
-    // ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
+    # FunctionL print_message
+    # Description: Writes a null-terminated string to the UART0 TX FIVO.
+    # ------------------------------------------------------------------------
     .align 4
     .type print_message, @function
     print_message:
