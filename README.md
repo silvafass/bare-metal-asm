@@ -7,6 +7,7 @@ A simple and minimalist bare metal code experiment for microcontroller learning 
 This project demonstrates bare metal programming in low level with Assembly on microcontrolers. It implements a few program examples that runs entirely without an operating system, using Assembly only and direct hardware manipulation.
 
 **Boards**
+* [Arduino Uno SMD R2](docs/arduino_uno_smd_r2.md)
 * [ESP32 TTGO T-Display](docs/esp32_ttgo_tdisplay.md)
 
 ### Project Structure
@@ -16,8 +17,11 @@ bare-metal-asm/
 ├── README.md                     # Project description
 ├── Makefile                      # Build and flash automation
 ├── docs/                         # Hardware setup and instructions
+│   ├── arduino_uno_smd_r2.md
 │   └── esp32_ttgo_tdisplay.md
 └── src/
+    ├── arduino_uno_smd_r2/       # Arduino UNO(AVR) source codes
+    │   └── blinks.s
     └── esp32_ttgo_tdisplay/      # ESP32(Xtensa-LX6) source codes
         ├── blinks.s
         └── linker.ld
