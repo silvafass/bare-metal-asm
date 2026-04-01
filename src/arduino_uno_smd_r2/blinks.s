@@ -1,5 +1,5 @@
-.set    PORTB, 0x04
-.set    DDRB, 0x05
+.set    DDRB, 0x04
+.set    PINB, 0x03
 .set    DDRB_BIT, 5
 
 .section .text
@@ -7,20 +7,15 @@
     .global reset_handler
     .type reset_handler, @function
     reset_handler:
-        rcall   main
+        rjmp   main
 
-    .type main, @function
     main:
-        sbi     PORTB, DDRB_BIT
-    loop:
         sbi     DDRB, DDRB_BIT
-        rcall    wait_1s
-
-        cbi     DDRB, DDRB_BIT
+    loop:
+        sbi     PINB, DDRB_BIT
         rcall    wait_1s
 
         rjmp    loop
-        ret
 
     .type wait_1s, @function
     wait_1s:
