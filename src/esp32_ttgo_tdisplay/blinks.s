@@ -14,13 +14,13 @@
  *              along the program.
  * ============================================================================
  */
-.set    DISABLE_WATCHDOG, 1
-.set    RTC_CNTL_WDTWPROTECT_REG_OFFSET, 0x00a4
-.set    RTC_CNTL_WDTCONFIG0_REG_OFFSET, 0x008C
-.set    RTC_CNTL_WDTFEED_REG_OFFSET, 0x00A0
-.set    GPIO_ENABLE_W1TS_REG_OFFSET, 0x0024
-.set    GPIO_OUT_W1TS_REG_OFFSET, 0x0008
-.set    GPIO_OUT_W1TC_REG_OFFSET, 0x000c
+.set    DISABLE_WATCHDOG, 1                         // Flag to disable the RTC Watchdog Timer (1 = disable, 0 = keep enabled)
+.set    RTC_CNTL_WDTWPROTECT_REG_OFFSET, 0x00a4     // Offset for Watchdog write protect register
+.set    RTC_CNTL_WDTCONFIG0_REG_OFFSET, 0x008C      // Offset for Watchdog configuration register 0
+.set    RTC_CNTL_WDTFEED_REG_OFFSET, 0x00A0         // Offset for Watchdog feed register
+.set    GPIO_ENABLE_W1TS_REG_OFFSET, 0x0024         // Offset for GPIO enable write 1 to set register (configures pin as output)
+.set    GPIO_OUT_W1TS_REG_OFFSET, 0x0008            // Offset for GPIO output write 1 to set register (sets pin HIGH)
+.set    GPIO_OUT_W1TC_REG_OFFSET, 0x000c            // Offset for GPIO outupt write 1 to clear register (sets pin LOW)
 
 /*
  * ============================================================================
@@ -30,17 +30,23 @@
  */
 .section .rodata_desc
 
+    /*
+     * The ESP32 ROM bootloader looks for this magic word to validate the image
+     * Note: This looks to work with any value since that this have some thing
+     * defined witin .rodata_desc
+     */
     BOOT_MAGIC_WORD: .word 0xABCD5432
 
 /*
  * ============================================================================
  * Section: Read-Only Data
  * Description: Mapped to DROM (Flash Data memory). Contains constant strings,
- *  hardcoded arrays, and other immutable variables.
+ *              hardcoded arrays, and other immutable variables.
  * ============================================================================
  */
 .section .rodata
 
+    /* Strings used for UART output */
     boot_message:           .string "\r\n=== Bare Metal ESP32 Booted! ===\r\n"
     starting_blick_message: .string "Starting the display backlight blick sequence...\r\n"
     backlight_on_message:   .string "Display backlight: ON\r\n"
@@ -55,18 +61,21 @@
  */
 .section .text
 
+    /* Literal pool (Pointers to Strings) */
     .literal    BOOT_MESSAGE_ADDR, boot_message
     .literal    STARTING_BLICK_MESSAGE_ADDR, starting_blick_message
     .literal    BACKLIGHT_ON_MESSAGE_ADDR, backlight_on_message
     .literal    BACKLIGHT_OFF_MESSAGE_ADDR, backlight_off_message
 
-    RTC_CNTL_OPTIONS0_REG_BASE:     .word 0x3FF48000
-    UART_FIFO_REG_BASE:             .word 0x3FF40000
-    GPIO_REG_BASE:                  .word 0x3FF44000
+    /* Literal pool (Base addresses for ESP32 hardware peripherals) */
+    RTC_CNTL_OPTIONS0_REG_BASE:     .word 0x3FF48000    // Base address for RTC control registers
+    UART_FIFO_REG_BASE:             .word 0x3FF40000    // Base address for UART0 registers
+    GPIO_REG_BASE:                  .word 0x3FF44000    // Base address for GPIO registers
 
-    WDT_WPROTECT_VAL:               .word 0x50D83AA1
-    DELAY_COUNT:                    .word 1000
-    LED_GPIO:                       .word (1 << 4)
+    /* Literal pool (Constants) */
+    WDT_WPROTECT_VAL:               .word 0x50D83AA1    // Magic value required to unlock RTC Watchdog registers for writing
+    DELAY_COUNT:                    .word 1000          // Base delay multiplier (1000 ms / 1 s)
+    LED_GPIO:                       .word (1 << 4)      // Bitmask for GPIO 47 (TTGO T-Display backlight)
 
     /*
      * ------------------------------------------------------------------------
