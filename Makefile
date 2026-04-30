@@ -30,7 +30,7 @@ flash_esp32_ttgo_tdisplay: clean _build_dir
 
 	xtensa-esp32-elf-as src/esp32_ttgo_tdisplay/$(BIN).s -o build/esp32_ttgo_tdisplay_$(BIN).o
 	xtensa-esp32-elf-ld -T src/esp32_ttgo_tdisplay/linker.ld -o build/esp32_ttgo_tdisplay_$(BIN) build/esp32_ttgo_tdisplay_$(BIN).o
-	espflash flash --monitor --chip esp32 --port /dev/ttyUSB0 build/esp32_ttgo_tdisplay_$(BIN)
+	espflash flash --monitor --chip esp32 build/esp32_ttgo_tdisplay_$(BIN)
 
 flash_arduino_uno_smd_r2: clean _build_dir
 	@if [ "$(BIN)" = "" ]; then
@@ -43,7 +43,7 @@ flash_arduino_uno_smd_r2: clean _build_dir
 	avrdude -c arduino -P /dev/ttyACM0 -p atmega328p -D -U flash:w:build/arduino_uno_smd_r2_blinks:e
 
 arase_flash_esp32:
-	espflash erase-flash --port /dev/ttyUSB0
+	espflash erase-flash
 
 _build_dir:
 	mkdir -p build

@@ -14,13 +14,13 @@
  *              along the program.
  * ============================================================================
  */
-.set    DISABLE_WATCHDOG, 1                         ; Flag to disable the RTC Watchdog Timer (1 = disable, 0 = keep enabled)
-.set    RTC_CNTL_WDTWPROTECT_REG_OFFSET, 0x00a4     ; Offset for Watchdog write protect register
-.set    RTC_CNTL_WDTCONFIG0_REG_OFFSET, 0x008C      ; Offset for Watchdog configuration register 0
-.set    RTC_CNTL_WDTFEED_REG_OFFSET, 0x00A0         ; Offset for Watchdog feed register
-.set    GPIO_ENABLE_W1TS_REG_OFFSET, 0x0024         ; Offset for GPIO enable write 1 to set register (configures pin as output)
-.set    GPIO_OUT_W1TS_REG_OFFSET, 0x0008            ; Offset for GPIO output write 1 to set register (sets pin HIGH)
-.set    GPIO_OUT_W1TC_REG_OFFSET, 0x000c            ; Offset for GPIO outupt write 1 to clear register (sets pin LOW)
+.set    DISABLE_WATCHDOG, 1                         // Flag to disable the RTC Watchdog Timer (1 = disable, 0 = keep enabled)
+.set    RTC_CNTL_WDTWPROTECT_REG_OFFSET, 0x00a4     // Offset for Watchdog write protect register
+.set    RTC_CNTL_WDTCONFIG0_REG_OFFSET, 0x008C      // Offset for Watchdog configuration register 0
+.set    RTC_CNTL_WDTFEED_REG_OFFSET, 0x00A0         // Offset for Watchdog feed register
+.set    GPIO_ENABLE_W1TS_REG_OFFSET, 0x0024         // Offset for GPIO enable write 1 to set register (configures pin as output)
+.set    GPIO_OUT_W1TS_REG_OFFSET, 0x0008            // Offset for GPIO output write 1 to set register (sets pin HIGH)
+.set    GPIO_OUT_W1TC_REG_OFFSET, 0x000c            // Offset for GPIO outupt write 1 to clear register (sets pin LOW)
 
 /*
  * ============================================================================
@@ -68,14 +68,14 @@
     .literal    BACKLIGHT_OFF_MESSAGE_ADDR, backlight_off_message
 
     /* Literal pool (Base addresses for ESP32 hardware peripherals) */
-    RTC_CNTL_OPTIONS0_REG_BASE:     .word 0x3FF48000    ; Base address for RTC control registers
-    UART_FIFO_REG_BASE:             .word 0x3FF40000    ; Base address for UART0 registers
-    GPIO_REG_BASE:                  .word 0x3FF44000    ; Base address for GPIO registers
+    RTC_CNTL_OPTIONS0_REG_BASE:     .word 0x3FF48000    // Base address for RTC control registers
+    UART_FIFO_REG_BASE:             .word 0x3FF40000    // Base address for UART0 registers
+    GPIO_REG_BASE:                  .word 0x3FF44000    // Base address for GPIO registers
 
     /* Literal pool (Constants) */
-    WDT_WPROTECT_VAL:               .word 0x50D83AA1    ; Magic value required to unlock RTC Watchdog registers for writing
-    DELAY_COUNT:                    .word 1000          ; Base delay multiplier (1000 ms / 1 s)
-    LED_GPIO:                       .word (1 << 4)      ; Bitmask for GPIO 47 (TTGO T-Display backlight)
+    WDT_WPROTECT_VAL:               .word 0x50D83AA1    // Magic value required to unlock RTC Watchdog registers for writing
+    DELAY_COUNT:                    .word 1000          // Base delay multiplier (1000 ms / 1 s)
+    LED_GPIO:                       .word (1 << 4)      // Bitmask for GPIO 47 (TTGO T-Display backlight)
 
     /*
      * ------------------------------------------------------------------------
@@ -158,7 +158,7 @@
     wait_cpu_cycles:
         entry   a1, 32
 
-        movi    a3, (80 * 1000)             ; Normal speed: 80 MHz
+        movi    a3, (80 * 1000)             // Normal speed: 80 MHz
         mull    a2, a2, a3
 
         loop    a2, wait_cpu_cycles_return
